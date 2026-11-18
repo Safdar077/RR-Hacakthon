@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajasthan Royals - SupeRR Selector Pressure Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --rr-pink: #EA1A85;
+      --rr-pink-hover: #ff2b9a;
+      --rr-pink-glow: rgba(234, 26, 133, 0.25);
+      --rr-blue: #004B8C;
+      --rr-navy: #0A192F;
+      --rr-dark: #070D18;
+      --rr-card: #0F1D33;
+      --rr-card-border: #1E3354;
+      --rr-gold: #D4AF37;
+      --rr-gold-glow: rgba(212, 175, 55, 0.25);
+      --rr-text: #E2E8F0;
+      --rr-text-muted: #94A3B8;
+      --rr-green: #10B981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--rr-dark);
+      color: var(--rr-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Brand Bar */
+    .top-bar {
+      background: linear-gradient(90deg, #0A192F 0%, #152744 50%, #0A192F 100%);
+      border-bottom: 3px solid var(--rr-pink);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rr-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--rr-pink) 0%, var(--rr-blue) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 0 15px var(--rr-pink-glow);
+      border: 2px solid var(--rr-gold);
+    }
+
+    .brand-title h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title h1 span {
+      color: var(--rr-pink);
+    }
+
+    .brand-title p {
+      font-size: 12px;
+      color: var(--rr-gold);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .brand-badge {
+      background: rgba(234, 26, 133, 0.15);
+      border: 1px solid var(--rr-pink);
+      color: var(--rr-pink);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--rr-pink);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--rr-pink);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--rr-card);
+      border: 1px solid var(--rr-card-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--rr-pink);
+    }
+
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--rr-pink);
+    }
+
+    .kpi-card.gold::after {
+      background: var(--rr-gold);
+    }
+
+    .kpi-card.blue::after {
+      background: var(--rr-blue);
+    }
+
+    .kpi-card.green::after {
+      background: var(--rr-green);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--rr-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-val {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--rr-text-muted);
+      margin-top: 4px;
+    }
+
+    .kpi-sub strong {
+      color: var(--rr-gold);
+    }
+
+    /* Tab Controls */
+    .tabs {
+      display: flex;
+      gap: 12px;
+      border-bottom: 2px solid var(--rr-card-border);
+      margin-bottom: 24px;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--rr-text-muted);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(234, 26, 133, 0.05);
+    }
+
+    .tab-btn.active {
+      color: var(--rr-pink);
+      background: rgba(234, 26, 133, 0.1);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--rr-pink);
+      border-radius: 3px;
+    }
+
+    /* Content Area */
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 24px;
+    }
+
+    .charts-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .chart-box {
+      background: var(--rr-card);
+      border: 1px solid var(--rr-card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rr-card-border);
+    }
+
+    .chart-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-header h3::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--rr-pink);
+      border-radius: 2px;
+    }
+
+    .chart-sub {
+      font-size: 12px;
+      color: var(--rr-text-muted);
+    }
+
+    .chart-canvas-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--rr-card);
+      border: 1px solid var(--rr-card-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #081220;
+      color: var(--rr-text-muted);
+      padding: 12px 14px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--rr-card-border);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--rr-text);
+    }
+
+    tr:hover td {
+      background: rgba(234, 26, 133, 0.08);
+      cursor: pointer;
+    }
+
+    tr.selected td {
+      background: rgba(234, 26, 133, 0.18);
+      border-left: 3px solid var(--rr-pink);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-capped {
+      background: rgba(0, 75, 140, 0.25);
+      border: 1px solid var(--rr-blue);
+      color: #60A5FA;
+    }
+
+    .tag-uncapped {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--rr-green);
+      color: #34D399;
+    }
+
+    .rank-badge {
+      width: 24px;
+      height: 24px;
+      background: #15243B;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--rr-gold);
+    }
+
+    tr:nth-child(1) .rank-badge {
+      background: var(--rr-gold);
+      color: #000;
+    }
+
+    tr:nth-child(2) .rank-badge {
+      background: #C0C0C0;
+      color: #000;
+    }
+
+    tr:nth-child(3) .rank-badge {
+      background: #CD7F32;
+      color: #fff;
+    }
+
+    /* Player Showcase Card (Right Column) */
+    .showcase-column {
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+    }
+
+    .showcase-card {
+      background: var(--rr-card);
+      border: 2px solid var(--rr-pink);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--rr-pink-glow);
+    }
+
+    .showcase-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rr-card-border);
+    }
+
+    .showcase-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .showcase-role {
+      font-size: 12px;
+      color: var(--rr-gold);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .showcase-index {
+      text-align: right;
+    }
+
+    .showcase-index-val {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--rr-pink);
+    }
+
+    .showcase-index-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--rr-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .showcase-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-tile {
+      background: #081220;
+      border: 1px solid var(--rr-card-border);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat-tile-lbl {
+      font-size: 10px;
+      color: var(--rr-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stat-tile-val {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-tile-val.highlight {
+      color: var(--rr-pink);
+    }
+
+    .showcase-review-box {
+      background: rgba(10, 25, 47, 0.7);
+      border: 1px solid var(--rr-card-border);
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .showcase-review-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--rr-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .showcase-review-header::before {
+      content: '★';
+      color: var(--rr-gold);
+    }
+
+    .showcase-review-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #CBD5E1;
+    }
+
+    /* Action bar */
+    .action-bar {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn {
+      background: var(--rr-card);
+      border: 1px solid var(--rr-card-border);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--rr-pink);
+      border-color: var(--rr-pink);
+    }
+
+    .btn-pink {
+      background: var(--rr-pink);
+      border-color: var(--rr-pink);
+    }
+
+    .btn-pink:hover {
+      background: var(--rr-pink-hover);
+      box-shadow: 0 0 15px var(--rr-pink-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Brand Navigation -->
+  <header class="top-bar">
+    <div class="brand-left">
+      <div class="rr-logo">RR</div>
+      <div class="brand-title">
+        <h1>RAJASTHAN ROYALS <span>SupeRR Selector</span></h1>
+        <p>Season 2 Official High-Leverage Pressure Analytics Portal</p>
+      </div>
+    </div>
+    <div class="brand-badge">
+      HALLA BOL COMMAND CENTER
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- KPI Summary Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Top Pressure Batter</div>
+        <div class="kpi-val">Jos Buttler <span style="font-size: 14px; color: var(--rr-pink);">66.07 BPI</span></div>
+        <div class="kpi-sub">335 balls @ <strong>183.58 SR</strong> (+33.03 Delta)</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Top Uncapped Sensation</div>
+        <div class="kpi-val">Priyansh Arya <span style="font-size: 14px; color: var(--rr-gold);">#2 World</span></div>
+        <div class="kpi-sub">117 balls @ <strong>198.29 SR</strong> (33.14 Avg)</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Top Pressure Bowler</div>
+        <div class="kpi-val">Arshdeep Singh <span style="font-size: 14px; color: #60A5FA;">69.76 BoPI</span></div>
+        <div class="kpi-sub">1,308 balls | <strong>95 Wickets</strong></div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Best Pressure Containment</div>
+        <div class="kpi-val">Sunil Narine <span style="font-size: 14px; color: var(--rr-green);">6.86 Econ</span></div>
+        <div class="kpi-sub">Saves <strong>+2.20 runs/over</strong> below match par</div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('batters')">🏏 Top 10 Batters Dossier</button>
+      <button class="tab-btn" onclick="switchTab('bowlers')">🎯 Top 10 Bowlers Dossier</button>
+      <button class="tab-btn" onclick="switchTab('matrix')">📊 Franchise Strategic Matrix</button>
+    </nav>
+
+    <!-- TAB 1: BATTERS -->
+    <div id="batters-view" class="view-section active">
+      <div class="dashboard-layout">
+        <div class="charts-column">
+          
+          <!-- Chart Row 1: BPI Rankings & Scatter -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <h3>Batting Pressure Index (BPI)</h3>
+                  <div class="chart-sub">Overall composite index across sample, strike rate & leverage</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chartBattersBPI"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <h3>Pressure Strike Rate vs Average</h3>
+                  <div class="chart-sub">Bubble size indicates pressure balls faced</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chartBattersScatter"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart Row 2: Delta SR Jump -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <div>
+                <h3>Delta Strike Rate (+/- vs Career Normal)</h3>
+                <div class="chart-sub">Quantifies acceleration under high required rates and late overs</div>
+              </div>
+            </div>
+            <div class="chart-canvas-container" style="height: 220px;">
+              <canvas id="chartBattersDelta"></canvas>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player Name</th>
+                  <th>Status</th>
+                  <th>Batting Role</th>
+                  <th>Balls</th>
+                  <th>Matches</th>
+                  <th>Press SR</th>
+                  <th>Delta SR</th>
+                  <th>Press Avg</th>
+                  <th>BPI</th>
+                </tr>
+              </thead>
+              <tbody id="battersTableBody"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Interactive Player Showcase -->
+        <div class="showcase-column">
+          <div class="showcase-card" id="batterShowcase">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: BOWLERS -->
+    <div id="bowlers-view" class="view-section">
+      <div class="dashboard-layout">
+        <div class="charts-column">
+          
+          <!-- Chart Row 1: BoPI Rankings & Econ vs Wkts -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <h3>Bowling Pressure Index (BoPI)</h3>
+                  <div class="chart-sub">Composite index evaluating economy containment & clutch wickets</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chartBowlersBoPI"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <h3>Pressure Economy vs Wickets Taken</h3>
+                  <div class="chart-sub">Bubble size indicates runs saved per over below match par</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chartBowlersScatter"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart Row 2: Runs Saved Below Par -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <div>
+                <h3>Runs Saved Per Over Below Match Par</h3>
+                <div class="chart-sub">Direct run-suppression value added relative to baseline par</div>
+              </div>
+            </div>
+            <div class="chart-canvas-container" style="height: 220px;">
+              <canvas id="chartBowlersSaved"></canvas>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player Name</th>
+                  <th>Status</th>
+                  <th>Balls</th>
+                  <th>Matches</th>
+                  <th>Press Econ</th>
+                  <th>Delta Econ</th>
+                  <th>Wkts</th>
+                  <th>Dot %</th>
+                  <th>BoPI</th>
+                </tr>
+              </thead>
+              <tbody id="bowlersTableBody"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Interactive Player Showcase -->
+        <div class="showcase-column">
+          <div class="showcase-card" id="bowlerShowcase">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: STRATEGIC MATRIX -->
+    <div id="matrix-view" class="view-section">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <div class="chart-box">
+          <div class="chart-header">
+            <div>
+              <h3>Rajasthan Royals Franchise Batting Core</h3>
+              <div class="chart-sub">Target profile: Top-order power and middle-order match control</div>
+            </div>
+          </div>
+          <div style="font-size: 13px; line-height: 1.7; color: var(--rr-text);">
+            <p style="margin-bottom: 12px;"><strong style="color: var(--rr-pink);">Key Finding:</strong> <strong>Priyansh Arya (Uncapped)</strong> ranks #2 overall with an astounding <strong>198.29 strike rate</strong> under pressure, validating Rajasthan Royals' philosophy of discovering elite domestic talent before auctions.</p>
+            <p style="margin-bottom: 12px;"><strong style="color: var(--rr-gold);">Core Anchors:</strong> <strong>Jos Buttler (66.07 BPI)</strong> and <strong>Suryakumar Yadav (821 balls, 47.10 Avg)</strong> give unmatched volume and reliability in steep chases.</p>
+            <p><strong style="color: var(--rr-green);">Late Finishing:</strong> <strong>Tim David (180.57 SR)</strong> and <strong>Dinesh Karthik (504 balls, 175.20 SR)</strong> provide proven closing execution against death bowling.</p>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-header">
+            <div>
+              <h3>Rajasthan Royals Franchise Bowling Core</h3>
+              <div class="chart-sub">Target profile: Death yorkers and middle-overs boundary restriction</div>
+            </div>
+          </div>
+          <div style="font-size: 13px; line-height: 1.7; color: var(--rr-text);">
+            <p style="margin-bottom: 12px;"><strong style="color: var(--rr-pink);">Elite Death Execution:</strong> <strong>Arshdeep Singh (95 pressure wickets)</strong> and <strong>Jasprit Bumrah (7.64 economy, +2.04 runs saved/ov)</strong> represent the pinnacle of high-leverage pace bowling.</p>
+            <p style="margin-bottom: 12px;"><strong style="color: var(--rr-gold);">Spin Strangle:</strong> <strong>Sunil Narine (6.86 economy)</strong> and <strong>Rashid Khan (70 wickets)</strong> completely starve batting momentum in overs 11 through 18.</p>
+            <p><strong style="color: var(--rr-green);">Sling Weapon:</strong> <strong>Matheesha Pathirana (57 wickets)</strong> saves +1.77 runs per over below par with an awkward slingy trajectory.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn" onclick="window.print()">🖨️ Print Dossier</button>
+      <a href="Rajasthan_Royals_Pressure_Dashboard.twb" download class="btn btn-pink">📥 Download Tableau Workbook (.twb)</a>
+      <a href="final%20player%20list.xlsx" download class="btn">📊 Download Final Excel (.xlsx)</a>
+    </div>
+
+  </main>
+
+  <script>
+    // Data injected from Python
+    const battersData = [{"Rank": 1, "Player Name": "Jos Buttler", "Status": "Capped", "Batting Role": "Top-Order (1-3)", "Pressure Balls": 335, "Pressure Matches": 30, "Pressure Strike Rate": 183.58, "Base Career SR": 150.55, "Delta SR (+/-)": 33.03, "Pressure Average": 29.29, "Pressure Boundary %": "28.1%", "Runs Above Exp / 100b": 33.38, "Batting Pressure Index (BPI)": 66.07, "Scout Review & Selection Reasoning": "Buttler is one of the most reliable pressure match-winners in modern T20 cricket. Across 335 pressure balls in 30 high-stakes matches, his strike rate surges from 150.55 to 183.58 (+33.03). He finds boundaries in 26.27% of pressure deliveries. He takes on frontline international bowlers in must-win chases and playoff situations."}, {"Rank": 2, "Player Name": "Priyansh Arya", "Status": "Uncapped", "Batting Role": "Top-Order (1-3)", "Pressure Balls": 117, "Pressure Matches": 11, "Pressure Strike Rate": 198.29, "Base Career SR": 182.71, "Delta SR (+/-)": 15.58, "Pressure Average": 33.14, "Pressure Boundary %": "32.5%", "Runs Above Exp / 100b": 55.94, "Batting Pressure Index (BPI)": 65.75, "Scout Review & Selection Reasoning": "Arya is the standout uncapped domestic sensation under pressure. In 117 pressure balls across 11 matches, he struck at a staggering 198.29 (+15.58 above his 182.71 base) with a 33.14 average. He attacks elite capped pacers from ball one without showing any fear, making him a prime target for franchise scouting."}, {"Rank": 3, "Player Name": "Naman Dhir", "Status": "Capped", "Batting Role": "Top-Order (1-3)", "Pressure Balls": 236, "Pressure Matches": 25, "Pressure Strike Rate": 190.25, "Base Career SR": 164.51, "Delta SR (+/-)": 25.74, "Pressure Average": 26.41, "Pressure Boundary %": "28.8%", "Runs Above Exp / 100b": 32.01, "Batting Pressure Index (BPI)": 65.7, "Scout Review & Selection Reasoning": "Dhir has delivered top-tier aggressive batting under stress. In 236 pressure balls across 25 games, he strikes at 190.25 compared to his base 164.51 (+25.74 lift). He attacks hard lengths and hits over the infield during field restrictions and steep run chases."}, {"Rank": 4, "Player Name": "Suryakumar Yadav", "Status": "Capped", "Batting Role": "Middle-Order (4-5)", "Pressure Balls": 821, "Pressure Matches": 44, "Pressure Strike Rate": 172.11, "Base Career SR": 161.23, "Delta SR (+/-)": 10.88, "Pressure Average": 47.1, "Pressure Boundary %": "26.3%", "Runs Above Exp / 100b": 28.47, "Batting Pressure Index (BPI)": 65.54, "Scout Review & Selection Reasoning": "Suryakumar is the ultimate high-volume match-winner. Facing an enormous 821 pressure balls in 44 matches, he maintained a 172.11 strike rate (+10.88 over base) and an exceptional 47.10 average. His 360-degree sweep shots and scoops manipulate field settings even against top death attacks."}, {"Rank": 5, "Player Name": "Rishabh Pant", "Status": "Capped", "Batting Role": "Middle-Order (4-5)", "Pressure Balls": 358, "Pressure Matches": 31, "Pressure Strike Rate": 174.02, "Base Career SR": 136.99, "Delta SR (+/-)": 37.03, "Pressure Average": 28.32, "Pressure Boundary %": "26.8%", "Runs Above Exp / 100b": 24.39, "Batting Pressure Index (BPI)": 64.62, "Scout Review & Selection Reasoning": "Pant has faced 358 pressure balls across 31 matches, lifting his strike rate from 136.99 to 174.02 (+37.03 gain). When top orders stumble, he attacks orthodox fields and disrupts bowling plans with unorthodox boundary hitting through the leg side."}, {"Rank": 6, "Player Name": "Tim David", "Status": "Capped", "Batting Role": "Finisher (6-8)", "Pressure Balls": 669, "Pressure Matches": 66, "Pressure Strike Rate": 180.57, "Base Career SR": 168.45, "Delta SR (+/-)": 12.12, "Pressure Average": 37.75, "Pressure Boundary %": "25.9%", "Runs Above Exp / 100b": 22.32, "Batting Pressure Index (BPI)": 64.41, "Scout Review & Selection Reasoning": "David is a destructive death-overs finisher who faces heavy pressure consistently. Over 669 pressure balls in 66 games, he struck at 180.57 (+12.12 over base) while averaging 37.75. He uses his massive reach to clear long boundaries off full balls and yorkers."}, {"Rank": 7, "Player Name": "Shreyas Iyer", "Status": "Capped", "Batting Role": "Middle-Order (4-5)", "Pressure Balls": 482, "Pressure Matches": 37, "Pressure Strike Rate": 176.76, "Base Career SR": 147.6, "Delta SR (+/-)": 29.16, "Pressure Average": 32.77, "Pressure Boundary %": "24.1%", "Runs Above Exp / 100b": 29.91, "Batting Pressure Index (BPI)": 64.05, "Scout Review & Selection Reasoning": "Iyer is a proven match-controller who handles high-leverage overs with authority. Across 482 pressure balls in 37 games, he pushes his strike rate from 147.60 to 176.76 (+29.16) with an average of 32.77. He steps out against spinners and pulls hard lengths to control chases."}, {"Rank": 8, "Player Name": "Glenn Maxwell", "Status": "Capped", "Batting Role": "Middle-Order (4-5)", "Pressure Balls": 311, "Pressure Matches": 24, "Pressure Strike Rate": 176.53, "Base Career SR": 153.59, "Delta SR (+/-)": 22.94, "Pressure Average": 30.5, "Pressure Boundary %": "27.0%", "Runs Above Exp / 100b": 31.05, "Batting Pressure Index (BPI)": 63.37, "Scout Review & Selection Reasoning": "Maxwell turns games rapidly with fearless strokeplay in crunch overs. In 311 pressure balls across 24 games, he accelerated from a 153.59 base to 176.53 (+22.94) with a 30.50 average. His reverse sweeps and power down the ground make him difficult to bowl to."}, {"Rank": 9, "Player Name": "Gareth Delany", "Status": "Capped", "Batting Role": "Finisher (6-8)", "Pressure Balls": 147, "Pressure Matches": 15, "Pressure Strike Rate": 171.43, "Base Career SR": 128.19, "Delta SR (+/-)": 43.24, "Pressure Average": 28.0, "Pressure Boundary %": "23.8%", "Runs Above Exp / 100b": 22.1, "Batting Pressure Index (BPI)": 62.93, "Scout Review & Selection Reasoning": "Delany is an explosive finisher who thrives in crunch moments. In 147 pressure balls across 15 matches, his strike rate rockets from 128.19 to 171.43 (+43.24) with an average of 28.00. He clears the boundary regularly in the final five overs."}, {"Rank": 10, "Player Name": "Dinesh Karthik", "Status": "Capped", "Batting Role": "Finisher (6-8)", "Pressure Balls": 504, "Pressure Matches": 51, "Pressure Strike Rate": 175.2, "Base Career SR": 156.52, "Delta SR (+/-)": 18.68, "Pressure Average": 30.45, "Pressure Boundary %": "26.4%", "Runs Above Exp / 100b": 15.43, "Batting Pressure Index (BPI)": 62.62, "Scout Review & Selection Reasoning": "Karthik was the benchmark domestic finisher in the closing overs. Across 504 pressure balls in 51 matches, he struck at 175.20 (+18.68 over base) with a 30.45 average. He accesses fine leg and third man with scoops, ramps, and sweep shots to win tight games."}];
+    const bowlersData = [{"Rank": 1, "Player Name": "Arshdeep Singh", "Status": "Capped", "Pressure Balls": 1308, "Pressure Matches": 126, "Pressure Economy": 9.65, "Base Career Econ": 9.19, "Delta Econ (+ Containment)": -0.46, "Pressure Wickets": 95, "Pressure Dot %": "29.9%", "Runs Saved / Over Below Par": 0.42, "Bowling Pressure Index (BoPI)": 69.76, "Scout Review & Selection Reasoning": "Arshdeep shoulders the heaviest death-bowling workload in the database. In 1,308 pressure balls across 126 matches, he took 95 wickets with a 9.65 economy (delta economy -0.46). He consistently nails wide yorkers and attacks the stumps in the final overs."}, {"Rank": 2, "Player Name": "Jasprit Bumrah", "Status": "Capped", "Pressure Balls": 697, "Pressure Matches": 61, "Pressure Economy": 7.64, "Base Career Econ": 7.28, "Delta Econ (+ Containment)": -0.36, "Pressure Wickets": 50, "Pressure Dot %": "34.6%", "Runs Saved / Over Below Par": 2.04, "Bowling Pressure Index (BoPI)": 69.19, "Scout Review & Selection Reasoning": "Bumrah is the gold standard of high-leverage bowling. In 697 pressure balls across 61 games, his economy is 7.64, only 0.36 above his career base. He took 50 wickets and saves +2.04 runs per over below match par. Batters simply cannot score boundaries off him."}, {"Rank": 3, "Player Name": "Rashid Khan", "Status": "Capped", "Pressure Balls": 860, "Pressure Matches": 75, "Pressure Economy": 8.32, "Base Career Econ": 7.51, "Delta Econ (+ Containment)": -0.81, "Pressure Wickets": 70, "Pressure Dot %": "33.1%", "Runs Saved / Over Below Par": 0.76, "Bowling Pressure Index (BoPI)": 68.18, "Scout Review & Selection Reasoning": "Rashid is a constant wicket threat who turns games in the middle and death overs. In 860 pressure balls across 75 matches, he claimed 70 wickets with an 8.32 economy (delta -0.81). His fast leg-break and sharp googly force batters into mistakes during chases."}, {"Rank": 4, "Player Name": "Sunil Narine", "Status": "Capped", "Pressure Balls": 495, "Pressure Matches": 41, "Pressure Economy": 6.86, "Base Career Econ": 6.94, "Delta Econ (+ Containment)": 0.08, "Pressure Wickets": 29, "Pressure Dot %": "35.6%", "Runs Saved / Over Below Par": 2.2, "Bowling Pressure Index (BoPI)": 68.1, "Scout Review & Selection Reasoning": "Narine actually bowls more economically under pressure than in normal play. Across 495 pressure balls in 41 matches, his 6.86 pressure economy beats his 6.94 base, giving a positive delta economy of +0.08. He saves +2.20 runs per over below par and took 29 wickets."}, {"Rank": 5, "Player Name": "Matheesha Pathirana", "Status": "Capped", "Pressure Balls": 670, "Pressure Matches": 43, "Pressure Economy": 8.96, "Base Career Econ": 8.81, "Delta Econ (+ Containment)": -0.15, "Pressure Wickets": 57, "Pressure Dot %": "31.3%", "Runs Saved / Over Below Par": 1.77, "Bowling Pressure Index (BoPI)": 67.39, "Scout Review & Selection Reasoning": "Pathirana is a death-overs weapon with a slingy release that batters struggle to pick. In 670 pressure balls across 43 games, he conceded only 8.96 runs per over (delta -0.15 vs his 8.81 base) and took 57 wickets. He saves +1.77 runs per over below match expectations."}, {"Rank": 6, "Player Name": "Mitchell Santner", "Status": "Capped", "Pressure Balls": 485, "Pressure Matches": 35, "Pressure Economy": 7.44, "Base Career Econ": 7.46, "Delta Econ (+ Containment)": 0.02, "Pressure Wickets": 37, "Pressure Dot %": "35.0%", "Runs Saved / Over Below Par": 1.29, "Bowling Pressure Index (BoPI)": 66.86, "Scout Review & Selection Reasoning": "Santner gives nothing away in tight overs. Across 485 pressure balls in 35 matches, his pressure economy of 7.44 beats his career base of 7.46 (+0.02 delta). He took 37 wickets and saves +1.29 runs per over below par by varying flight and pace."}, {"Rank": 7, "Player Name": "Ravi Bishnoi", "Status": "Capped", "Pressure Balls": 1000, "Pressure Matches": 74, "Pressure Economy": 8.9, "Base Career Econ": 8.38, "Delta Econ (+ Containment)": -0.52, "Pressure Wickets": 61, "Pressure Dot %": "35.0%", "Runs Saved / Over Below Par": 0.01, "Bowling Pressure Index (BoPI)": 64.76, "Scout Review & Selection Reasoning": "Bishnoi attacks the stumps with fast googlies under pressure. He bowled 1,000 pressure balls across 74 matches, taking 61 wickets with an 8.90 economy (delta -0.52 vs base 8.38). He restricts scoring in middle overs."}, {"Rank": 8, "Player Name": "Kuldeep Yadav", "Status": "Capped", "Pressure Balls": 610, "Pressure Matches": 51, "Pressure Economy": 8.4, "Base Career Econ": 8.07, "Delta Econ (+ Containment)": -0.33, "Pressure Wickets": 45, "Pressure Dot %": "31.6%", "Runs Saved / Over Below Par": 0.86, "Bowling Pressure Index (BoPI)": 63.36, "Scout Review & Selection Reasoning": "Kuldeep provides control and penetration through the middle overs. In 610 pressure balls across 51 games, he took 45 wickets with an 8.40 economy (delta -0.33 vs base 8.07). He saves +0.86 runs per over below par with deceptive drift and turn."}, {"Rank": 9, "Player Name": "Yuzvendra Chahal", "Status": "Capped", "Pressure Balls": 888, "Pressure Matches": 68, "Pressure Economy": 9.06, "Base Career Econ": 8.66, "Delta Econ (+ Containment)": -0.4, "Pressure Wickets": 62, "Pressure Dot %": "27.0%", "Runs Saved / Over Below Par": 0.21, "Bowling Pressure Index (BoPI)": 62.92, "Scout Review & Selection Reasoning": "Chahal invites batters to hit to the large boundary and beats them with flight. Across 888 pressure balls in 68 matches, he took 62 wickets with a 9.06 economy (delta -0.40). He remains composed when defending tight totals late in matches."}, {"Rank": 10, "Player Name": "Varun Chakravarthy", "Status": "Capped", "Pressure Balls": 776, "Pressure Matches": 60, "Pressure Economy": 9.02, "Base Career Econ": 8.08, "Delta Econ (+ Containment)": -0.94, "Pressure Wickets": 58, "Pressure Dot %": "36.0%", "Runs Saved / Over Below Par": -0.09, "Bowling Pressure Index (BoPI)": 62.75, "Scout Review & Selection Reasoning": "Chakravarthy provides mystery spin that dries up boundary options. In 776 pressure balls across 60 matches, he took 58 wickets with a 9.02 economy (delta -0.94 vs base 8.08). Batters rarely get under his carrom balls and top-spinners."}];
+
+    let selectedBatterIdx = 0;
+    let selectedBowlerIdx = 0;
+
+    // Tab Switching
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      
+      if (tab === 'batters') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('batters-view').classList.add('active');
+      } else if (tab === 'bowlers') {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('bowlers-view').classList.add('active');
+      } else if (tab === 'matrix') {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('matrix-view').classList.add('active');
+      }
+    }
+
+    // Render Batter Showcase Card
+    function renderBatterShowcase(idx) {
+      selectedBatterIdx = idx;
+      const p = battersData[idx];
+      const isUncapped = p['Status'] === 'Uncapped';
+      
+      const html = `
+        <div class="showcase-top">
+          <div>
+            <div class="showcase-name">${p['Player Name']}</div>
+            <div class="showcase-role">${p['Batting Role']} &bull; <span class="tag ${isUncapped ? 'tag-uncapped' : 'tag-capped'}">${p['Status']}</span></div>
+          </div>
+          <div class="showcase-index">
+            <div class="showcase-index-val">${p['Batting Pressure Index (BPI)'].toFixed(2)}</div>
+            <div class="showcase-index-lbl">Batting Pressure Index</div>
+          </div>
+        </div>
+
+        <div class="showcase-stats-grid">
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Pressure SR</div>
+            <div class="stat-tile-val highlight">${p['Pressure Strike Rate'].toFixed(1)}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Delta SR</div>
+            <div class="stat-tile-val" style="color: var(--rr-gold);">+${p['Delta SR (+/-)'].toFixed(1)}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Pressure Avg</div>
+            <div class="stat-tile-val">${p['Pressure Average'].toFixed(1)}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Pressure Balls</div>
+            <div class="stat-tile-val">${p['Pressure Balls']}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Matches</div>
+            <div class="stat-tile-val">${p['Pressure Matches']}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Boundary %</div>
+            <div class="stat-tile-val">${p['Pressure Boundary %']}</div>
+          </div>
+        </div>
+
+        <div class="showcase-review-box">
+          <div class="showcase-review-header">Franchise Scout Intelligence</div>
+          <div class="showcase-review-text">${p['Scout Review & Selection Reasoning']}</div>
+        </div>
+      `;
+
+      document.getElementById('batterShowcase').innerHTML = html;
+
+      // Update table highlight
+      document.querySelectorAll('#battersTableBody tr').forEach((tr, i) => {
+        if (i === idx) tr.classList.add('selected');
+        else tr.classList.remove('selected');
+      });
+    }
+
+    // Render Bowler Showcase Card
+    function renderBowlerShowcase(idx) {
+      selectedBowlerIdx = idx;
+      const p = bowlersData[idx];
+      const isUncapped = p['Status'] === 'Uncapped';
+      
+      const html = `
+        <div class="showcase-top">
+          <div>
+            <div class="showcase-name">${p['Player Name']}</div>
+            <div class="showcase-role">Death & Middle Specialist &bull; <span class="tag ${isUncapped ? 'tag-uncapped' : 'tag-capped'}">${p['Status']}</span></div>
+          </div>
+          <div class="showcase-index">
+            <div class="showcase-index-val">${p['Bowling Pressure Index (BoPI)'].toFixed(2)}</div>
+            <div class="showcase-index-lbl">Bowling Pressure Index</div>
+          </div>
+        </div>
+
+        <div class="showcase-stats-grid">
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Pressure Econ</div>
+            <div class="stat-tile-val highlight">${p['Pressure Economy'].toFixed(2)}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Pressure Wkts</div>
+            <div class="stat-tile-val" style="color: var(--rr-pink);">${p['Pressure Wickets']}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Runs Saved/Ov</div>
+            <div class="stat-tile-val" style="color: var(--rr-gold);">${p['Runs Saved / Over Below Par'] > 0 ? '+' : ''}${p['Runs Saved / Over Below Par'].toFixed(2)}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Balls Bowled</div>
+            <div class="stat-tile-val">${p['Pressure Balls']}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Matches</div>
+            <div class="stat-tile-val">${p['Pressure Matches']}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-lbl">Dot Ball %</div>
+            <div class="stat-tile-val">${p['Pressure Dot %']}</div>
+          </div>
+        </div>
+
+        <div class="showcase-review-box">
+          <div class="showcase-review-header">Franchise Scout Intelligence</div>
+          <div class="showcase-review-text">${p['Scout Review & Selection Reasoning']}</div>
+        </div>
+      `;
+
+      document.getElementById('bowlerShowcase').innerHTML = html;
+
+      document.querySelectorAll('#bowlersTableBody tr').forEach((tr, i) => {
+        if (i === idx) tr.classList.add('selected');
+        else tr.classList.remove('selected');
+      });
+    }
+
+    // Populate Batters Table
+    const bTable = document.getElementById('battersTableBody');
+    battersData.forEach((p, idx) => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => renderBatterShowcase(idx);
+      tr.innerHTML = `
+        <td><div class="rank-badge">${p['Rank']}</div></td>
+        <td><strong>${p['Player Name']}</strong></td>
+        <td><span class="tag ${p['Status'] === 'Uncapped' ? 'tag-uncapped' : 'tag-capped'}">${p['Status']}</span></td>
+        <td>${p['Batting Role']}</td>
+        <td>${p['Pressure Balls']}</td>
+        <td>${p['Pressure Matches']}</td>
+        <td><strong>${p['Pressure Strike Rate'].toFixed(1)}</strong></td>
+        <td style="color: var(--rr-gold);">+${p['Delta SR (+/-)'].toFixed(1)}</td>
+        <td>${p['Pressure Average'].toFixed(1)}</td>
+        <td><strong style="color: var(--rr-pink);">${p['Batting Pressure Index (BPI)'].toFixed(2)}</strong></td>
+      `;
+      bTable.appendChild(tr);
+    });
+
+    // Populate Bowlers Table
+    const wTable = document.getElementById('bowlersTableBody');
+    bowlersData.forEach((p, idx) => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => renderBowlerShowcase(idx);
+      tr.innerHTML = `
+        <td><div class="rank-badge">${p['Rank']}</div></td>
+        <td><strong>${p['Player Name']}</strong></td>
+        <td><span class="tag ${p['Status'] === 'Uncapped' ? 'tag-uncapped' : 'tag-capped'}">${p['Status']}</span></td>
+        <td>${p['Pressure Balls']}</td>
+        <td>${p['Pressure Matches']}</td>
+        <td><strong>${p['Pressure Economy'].toFixed(2)}</strong></td>
+        <td style="color: ${p['Delta Econ (+ Containment)'] >= 0 ? 'var(--rr-green)' : 'var(--rr-gold)'};">${p['Delta Econ (+ Containment)'] > 0 ? '+' : ''}${p['Delta Econ (+ Containment)'].toFixed(2)}</td>
+        <td><strong style="color: var(--rr-pink);">${p['Pressure Wickets']}</strong></td>
+        <td>${p['Pressure Dot %']}</td>
+        <td><strong style="color: var(--rr-pink);">${p['Bowling Pressure Index (BoPI)'].toFixed(2)}</strong></td>
+      `;
+      wTable.appendChild(tr);
+    });
+
+    // Initialize Showcase Cards
+    renderBatterShowcase(0);
+    renderBowlerShowcase(0);
+
+    // Initialize Chart.js Visualizations
+    const chartDefaults = {
+      color: '#94A3B8',
+      borderColor: '#1E3354',
+      font: { family: 'Inter', size: 11 }
+    };
+    Chart.defaults.color = chartDefaults.color;
+    Chart.defaults.borderColor = chartDefaults.borderColor;
+
+    // 1. Batters BPI Horizontal Bar
+    new Chart(document.getElementById('chartBattersBPI'), {
+      type: 'bar',
+      data: {
+        labels: battersData.map(p => p['Player Name']),
+        datasets: [{
+          label: 'Batting Pressure Index (BPI)',
+          data: battersData.map(p => p['Batting Pressure Index (BPI)']),
+          backgroundColor: battersData.map(p => p['Status'] === 'Uncapped' ? '#D4AF37' : '#EA1A85'),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { min: 60, max: 68 }
+        }
+      }
+    });
+
+    // 2. Batters Scatter Plot: SR vs Avg
+    new Chart(document.getElementById('chartBattersScatter'), {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Batters Matrix',
+          data: battersData.map(p => ({
+            x: p['Pressure Strike Rate'],
+            y: p['Pressure Average'],
+            name: p['Player Name'],
+            balls: p['Pressure Balls']
+          })),
+          backgroundColor: '#EA1A85',
+          borderColor: '#D4AF37',
+          pointRadius: battersData.map(p => Math.max(6, Math.sqrt(p['Pressure Balls']) * 0.7))
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.raw.name}: SR ${ctx.raw.x.toFixed(1)}, Avg ${ctx.raw.y.toFixed(1)} (${ctx.raw.balls} balls)`
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Pressure Strike Rate' }, min: 165 },
+          y: { title: { display: true, text: 'Pressure Average' }, min: 20 }
+        }
+      }
+    });
+
+    // 3. Batters Delta SR Jump
+    new Chart(document.getElementById('chartBattersDelta'), {
+      type: 'bar',
+      data: {
+        labels: battersData.map(p => p['Player Name']),
+        datasets: [{
+          label: 'Delta SR (+/-)',
+          data: battersData.map(p => p['Delta SR (+/-)']),
+          backgroundColor: '#004B8C',
+          borderColor: '#EA1A85',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // 4. Bowlers BoPI Horizontal Bar
+    new Chart(document.getElementById('chartBowlersBoPI'), {
+      type: 'bar',
+      data: {
+        labels: bowlersData.map(p => p['Player Name']),
+        datasets: [{
+          label: 'Bowling Pressure Index (BoPI)',
+          data: bowlersData.map(p => p['Bowling Pressure Index (BoPI)']),
+          backgroundColor: '#004B8C',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { min: 60, max: 72 }
+        }
+      }
+    });
+
+    // 5. Bowlers Scatter Plot: Economy vs Wickets
+    new Chart(document.getElementById('chartBowlersScatter'), {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Bowlers Matrix',
+          data: bowlersData.map(p => ({
+            x: p['Pressure Economy'],
+            y: p['Pressure Wickets'],
+            name: p['Player Name'],
+            saved: p['Runs Saved / Over Below Par']
+          })),
+          backgroundColor: '#004B8C',
+          borderColor: '#EA1A85',
+          pointRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.raw.name}: Econ ${ctx.raw.x.toFixed(2)}, Wkts ${ctx.raw.y} (Saved ${ctx.raw.saved > 0 ? '+' : ''}${ctx.raw.saved} rpo)`
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Pressure Economy (Lower is Better)' }, reverse: true },
+          y: { title: { display: true, text: 'Pressure Wickets' } }
+        }
+      }
+    });
+
+    // 6. Bowlers Runs Saved Per Over
+    new Chart(document.getElementById('chartBowlersSaved'), {
+      type: 'bar',
+      data: {
+        labels: bowlersData.map(p => p['Player Name']),
+        datasets: [{
+          label: 'Runs Saved / Over Below Par',
+          data: bowlersData.map(p => p['Runs Saved / Over Below Par']),
+          backgroundColor: bowlersData.map(p => p['Runs Saved / Over Below Par'] > 1.5 ? '#10B981' : (p['Runs Saved / Over Below Par'] >= 0 ? '#38BDF8' : '#F43F5E')),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
+</body>
+</html>
